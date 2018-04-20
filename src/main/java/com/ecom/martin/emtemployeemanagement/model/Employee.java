@@ -10,27 +10,16 @@ public class Employee {
 
     @Id
     private String email;
-
     private String password;
-
     private String firstName;
-
     private String lastName;
-
     private Gender gender;
-
     @ManyToOne
     @JoinColumn(name = "department_id")
     private Department department;
-
     private LocalDate birthDate;
-
     private boolean activated;
-
     private LocalDateTime registrationDate;
-
-    private String activationCode;
-
     private Role role;
 
     // JPA only
@@ -46,7 +35,6 @@ public class Employee {
             LocalDate birthDate,
             boolean activated,
             LocalDateTime registrationDate,
-            String activationCode,
             Role role) {
         this.email = email;
         this.password = password;
@@ -57,7 +45,6 @@ public class Employee {
         this.birthDate = birthDate;
         this.activated = activated;
         this.registrationDate = registrationDate;
-        this.activationCode = activationCode;
         this.role = role;
     }
 
@@ -131,14 +118,6 @@ public class Employee {
 
     public void setRegistrationDate(LocalDateTime registrationDate) {
         this.registrationDate = registrationDate;
-    }
-
-    public String getActivationCode() {
-        return activationCode;
-    }
-
-    public void setActivationCode(String activationCode) {
-        this.activationCode = activationCode;
     }
 
     public Role getRole() {

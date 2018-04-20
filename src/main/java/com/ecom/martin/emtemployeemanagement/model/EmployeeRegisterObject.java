@@ -1,15 +1,29 @@
 package com.ecom.martin.emtemployeemanagement.model;
 
+import com.ecom.martin.emtemployeemanagement.web.validators.FieldsValueMatch;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 
+@FieldsValueMatch.List({
+        @FieldsValueMatch(
+                message = "Passwords do not match",
+                field = "password",
+                fieldMatch = "verifyPassword"
+        )
+})
 public class EmployeeRegisterObject {
 
+    @NotEmpty
     private String email;
+    @NotEmpty
     private String password;
-    private String matchingPassword;
+    @NotEmpty
+    private String verifyPassword;
+    @NotEmpty
     private String firstName;
+    @NotEmpty
     private String lastName;
     @DateTimeFormat(pattern = "yyyy-MM-dd") // to enable thymeleaf form binding with the model
     private LocalDate birthDate;
@@ -20,14 +34,14 @@ public class EmployeeRegisterObject {
     public EmployeeRegisterObject(
             String email,
             String password,
-            String matchingPassword,
+            String verifyPassword,
             String firstName,
             String lastName,
             LocalDate birthDate,
             Gender gender) {
         this.email = email;
         this.password = password;
-        this.matchingPassword = matchingPassword;
+        this.verifyPassword = verifyPassword;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthDate = birthDate;
@@ -50,12 +64,12 @@ public class EmployeeRegisterObject {
         this.password = password;
     }
 
-    public String getMatchingPassword() {
-        return matchingPassword;
+    public String getVerifyPassword() {
+        return verifyPassword;
     }
 
-    public void setMatchingPassword(String matchingPassword) {
-        this.matchingPassword = matchingPassword;
+    public void setVerifyPassword(String verifyPassword) {
+        this.verifyPassword = verifyPassword;
     }
 
     public String getFirstName() {
