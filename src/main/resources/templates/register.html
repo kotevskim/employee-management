@@ -10,7 +10,7 @@
 <body>
 <div class="container">
     <h2>Register</h2>
-    <form action="/register" th:object="${employee}" method="POST" enctype="utf8">
+    <form th:action="@{/register}"  th:object="${employee}" method="POST" enctype="utf8">
         <div class="form-group">
             <label for="input-email">Email address</label>
             <input type="email" th:field="*{email}" class="form-control" id="input-email" placeholder="Enter email">

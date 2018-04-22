@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -39,18 +38,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .formLogin().loginPage("/login")
+                .formLogin().loginPage("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
                 .successForwardUrl("/edit-profile")
-            .and()
-            .logout().clearAuthentication(true).invalidateHttpSession(true)
-            .and()
-            .authorizeRequests().antMatchers("/me").hasRole("EMPLOYEE")
-            .and()
-            .authorizeRequests().antMatchers(
-                    "/login",
+                .and()
+                .logout().clearAuthentication(true).invalidateHttpSession(true)
+                .and()
+                .authorizeRequests().antMatchers("/me").hasRole("EMPLOYEE")
+                .and()
+                .authorizeRequests().antMatchers(
+                "/login",
                 "/register",
                 "/activation",
                 "reset-password").permitAll();
@@ -68,11 +66,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("Employee with email: " + email + " does not exist"));
 
-            return (UserDetails) new User(
+            return new User(
                     employee.getEmail(),
                     employee.getPassword(),
-                    Collections.singletonList(new SimpleGrantedAuthority(employee.getRole().toString()))
-            );
+                    employee.isEnabled(),
+                    employee.isAccountNotExpired(),
+                    employee.isCredentialsNotExpired(),
+                    employee.isAccountNotLocked(),
+                    Collections.singletonList(new SimpleGrantedAuthority(employee.getRole().toString())));
         };
     }
 

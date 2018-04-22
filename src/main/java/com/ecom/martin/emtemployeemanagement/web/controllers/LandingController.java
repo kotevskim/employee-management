@@ -60,7 +60,7 @@ public class LandingController {
     }
 
     @PostMapping(value = "register")
-    public ModelAndView registerEmployee(
+    public String registerEmployee(
             @ModelAttribute("employee") @Valid final EmployeeRegisterObject employeeRegisterObject,
             BindingResult bindingResult,
             Model model) {
@@ -68,10 +68,10 @@ public class LandingController {
             model.addAttribute("objectErrors", bindingResult.getAllErrors().stream().filter(err -> err.getClass() != FieldError.class).collect(Collectors.toList()));
             model.addAttribute("fieldErrors", bindingResult.getFieldErrors());
             model.addAttribute("errorPasswordsDoNotMatch", "Passwords do not match!");
-            return new ModelAndView("register?error");
+            return "register";
         }
         this.authService.registerEmployee(employeeRegisterObject);
-        return new ModelAndView("redirect:/activation");
+        return "redirect:/activation";
     }
 
     @PostMapping(value = "activation")

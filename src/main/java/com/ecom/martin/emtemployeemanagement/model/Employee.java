@@ -18,24 +18,29 @@ public class Employee {
     @JoinColumn(name = "department_id")
     private Department department;
     private LocalDate birthDate;
-    private boolean activated;
     private LocalDateTime registrationDate;
     private Role role;
+    private boolean enabled;
+    private boolean accountNotExpired;
+    private boolean credentialsNotExpired;
+    private boolean accountNotLocked;
 
     // JPA only
     public Employee() {}
 
-    public Employee(
-            String email,
-            String password,
-            String firstName,
-            String lastName,
-            Gender gender,
-            Department department,
-            LocalDate birthDate,
-            boolean activated,
-            LocalDateTime registrationDate,
-            Role role) {
+    public Employee(String email,
+                    String password,
+                    String firstName,
+                    String lastName,
+                    Gender gender,
+                    Department department,
+                    LocalDate birthDate,
+                    LocalDateTime registrationDate,
+                    Role role,
+                    boolean enabled,
+                    boolean accountNotExpired,
+                    boolean credentialsNotExpired,
+                    boolean accountNotLocked) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -43,9 +48,12 @@ public class Employee {
         this.gender = gender;
         this.department = department;
         this.birthDate = birthDate;
-        this.activated = activated;
         this.registrationDate = registrationDate;
         this.role = role;
+        this.enabled = enabled;
+        this.accountNotExpired = accountNotExpired;
+        this.credentialsNotExpired = credentialsNotExpired;
+        this.accountNotLocked = accountNotLocked;
     }
 
     public String getEmail() {
@@ -104,14 +112,6 @@ public class Employee {
         this.birthDate = birthDate;
     }
 
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-
     public LocalDateTime getRegistrationDate() {
         return registrationDate;
     }
@@ -126,5 +126,37 @@ public class Employee {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public boolean isAccountNotExpired() {
+        return accountNotExpired;
+    }
+
+    public void setAccountNotExpired(boolean accountNotExpired) {
+        this.accountNotExpired = accountNotExpired;
+    }
+
+    public boolean isCredentialsNotExpired() {
+        return credentialsNotExpired;
+    }
+
+    public void setCredentialsNotExpired(boolean credentialsNotExpired) {
+        this.credentialsNotExpired = credentialsNotExpired;
+    }
+
+    public boolean isAccountNotLocked() {
+        return accountNotLocked;
+    }
+
+    public void setAccountNotLocked(boolean accountNotLocked) {
+        this.accountNotLocked = accountNotLocked;
     }
 }

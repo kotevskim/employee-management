@@ -1,0 +1,41 @@
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    org.hibernate: INFO
+
+spring:
+  # Thymeleaf propertis
+  thymeleaf:
+    cache: false
+  # Datasource properties
+  datasource:
+    url: jdbc:postgresql://localhost:5432/employee_mgmt_db
+    username: postgres
+    password: postgres
+  # JPA and Hibernate properties
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+  # JavaMail Configuration
+  mail:
+    host: smtp.gmail.com
+    username: deutschmankote@gmail.com
+    password:
+    port: 587
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true

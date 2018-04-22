@@ -11,6 +11,7 @@ import com.ecom.martin.emtemployeemanagement.service.AuthService;
 import com.ecom.martin.emtemployeemanagement.service.EmployeeService;
 import com.ecom.martin.emtemployeemanagement.service.MailService;
 import org.springframework.mail.MailException;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -48,6 +49,7 @@ public class AuthServiceImpl implements AuthService {
                 this.mailService.sendMail(from, to, subject, text);
                 sent = true;
             } catch (MailException e) {
+                System.out.println("MAILERROR" + e.getMessage());
             }
         }
     }
@@ -59,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(InvalidTockenException::new);
         Employee em = this.employeeDao.findByEmail(token.getEmployee().getEmail())
                 .orElseThrow(EmployeeNotFoundException::new);
-        em.setActivated(true);
+        em.setEnabled(true);
         this.employeeVerificationTokenDao.delete(token);
     }
 

@@ -11,6 +11,11 @@
 <body>
 <div class="container">
     <span th:text="${username}"></span>
+    <div>
+        <form action="#" th:action="@{/logout}" method="post">
+            <input type="submit" value="Logout" />
+        </form>
+    </div>
 </div>
 </body>
 </html>

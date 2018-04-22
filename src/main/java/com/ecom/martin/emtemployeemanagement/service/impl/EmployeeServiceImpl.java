@@ -28,9 +28,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee createEmployee(EmployeeRegisterObject employee) {
         employeeDao.findByEmail(employee.getEmail()).ifPresent(it -> {throw new DuplicateEmployeeException();});
-        final boolean activated = false;
         final LocalDateTime registrationDate = LocalDateTime.now();
         final Role role = Role.ROLE_EMPLOYEE;
+        final boolean enabled = false;
+        final boolean accountNotExpired = true;
+        final boolean credentialsNotExpired = true;
+        final boolean accountNotLocked = true;
         Employee em = new Employee(
                 employee.getEmail(),
                 this.passwordEncoder.encode(employee.getPassword()),
@@ -39,9 +42,13 @@ public class EmployeeServiceImpl implements EmployeeService {
                 employee.getGender(),
                 null,
                 employee.getBirthDate(),
-                activated,
                 registrationDate,
-                role
+                role,
+                enabled,
+                accountNotExpired,
+                credentialsNotExpired,
+                accountNotLocked
+
         );
         this.employeeDao.save(em);
         return em;
