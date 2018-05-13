@@ -1,5 +1,6 @@
 package com.ecom.martin.emtemployeemanagement.web.controllers;
 
+import com.ecom.martin.emtemployeemanagement.model.Employee;
 import com.ecom.martin.emtemployeemanagement.model.EmployeeRegisterObject;
 import com.ecom.martin.emtemployeemanagement.service.AuthService;
 import com.ecom.martin.emtemployeemanagement.service.EmployeeService;
@@ -29,16 +30,16 @@ public class LandingController {
         this.authService = authService;
     }
 
-    @GetMapping(value = "me")
+    @GetMapping(value = "/me")
     public String getMe(Model model) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username;
+        String email;
         if (principal instanceof UserDetails) {
-            username = ((UserDetails)principal).getUsername();
+            email = ((UserDetails)principal).getUsername();
         } else {
-            username = principal.toString();
+            email = principal.toString();
         }
-        model.addAttribute("username", username);
+        model.addAttribute("email", email);
         return "me";
     }
 
@@ -84,11 +85,19 @@ public class LandingController {
         }
     }
 
-    @PostMapping("edit-profile")
-    public String showEditProfilePage(@RequestParam String email, Model model) {
-        model.addAttribute("email", email);
-        return "edit-profile";
+    @GetMapping("/reset-password")
+    public String showForgotPasswordPage() {
+        return "reset-password";
     }
 
+    @PostMapping("/reset-password")
+    public String resetPassword(@RequestParam String email) {
+        return this.employeeService.getEmployee(email)
+                .map(e -> {
+                    this.authService.resetPasswordForEmployee(e);
+                    return "redirect:/login";
+                })
+                .orElse("redirect:/reset-password?error");
+    }
 
 }

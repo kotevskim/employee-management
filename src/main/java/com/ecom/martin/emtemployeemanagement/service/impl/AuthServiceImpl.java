@@ -10,11 +10,11 @@ import com.ecom.martin.emtemployeemanagement.persistence.EmployeeVerificationTok
 import com.ecom.martin.emtemployeemanagement.service.AuthService;
 import com.ecom.martin.emtemployeemanagement.service.EmployeeService;
 import com.ecom.martin.emtemployeemanagement.service.MailService;
-import org.springframework.mail.MailException;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.UUID;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -23,14 +23,20 @@ public class AuthServiceImpl implements AuthService {
     private final EmployeeDao employeeDao;
     private final EmployeeService employeeService;
     private final EmployeeVerificationTokenDao employeeVerificationTokenDao;
+    private final PasswordEncoder passwordEncoder;
+
+    private static final String MAIL_SUBJECT_ACCOUNT_ACTIVATION = "Account Activation";
+    private static final String MAIL_SUBJECT_PASSWORD_RESET = "Password Reset";
 
     public AuthServiceImpl(final MailService mailService,
                            EmployeeDao employeeDao, final EmployeeService employeeService,
-                           final EmployeeVerificationTokenDao employeeVerificationTokenDao) {
+                           final EmployeeVerificationTokenDao employeeVerificationTokenDao,
+                           PasswordEncoder passwordEncoder) {
         this.mailService = mailService;
         this.employeeDao = employeeDao;
         this.employeeService = employeeService;
         this.employeeVerificationTokenDao = employeeVerificationTokenDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -38,11 +44,11 @@ public class AuthServiceImpl implements AuthService {
         Employee em = this.employeeService.createEmployee(employee);
         EmployeeVerificationToken verificationToken = new EmployeeVerificationToken(em);
         this.employeeVerificationTokenDao.save(verificationToken);
-        String from = "deutschmankote@gmail.com";
         String to = em.getEmail();
-        String subject = "Activate account";
-        String text = "Copy the folowing code: " + verificationToken.getCode();
-        mailService.sendMail(from, to, subject, text); // async method
+        String subject = MAIL_SUBJECT_ACCOUNT_ACTIVATION;
+        String text = "Copy the flowing code: " + verificationToken.getCode();
+        String successLogMessage =  "Mail with activation code sent to " + to;
+        mailService.sendMail(to, subject, text, successLogMessage); // async method
     }
 
     @Override
@@ -54,6 +60,18 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(EmployeeNotFoundException::new);
         em.setEnabled(true);
         this.employeeVerificationTokenDao.delete(token);
+    }
+
+    @Override
+    @Transactional
+    public void resetPasswordForEmployee(Employee employee) {
+        String newPassword = UUID.randomUUID().toString().substring(0, 6);
+        employee.setPassword(passwordEncoder.encode(newPassword));
+        String to = employee.getEmail();
+        String subject = MAIL_SUBJECT_PASSWORD_RESET;
+        String text = String.format("This is your new generated password: %s", newPassword);
+        String successLogMessage =  "Mail with new password sent to " + to;
+        this.mailService.sendMail(to, subject, text, successLogMessage);
     }
 
 }

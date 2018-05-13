@@ -1,6 +1,7 @@
 package com.ecom.martin.emtemployeemanagement.web.controllers;
 
 import com.ecom.martin.emtemployeemanagement.model.Employee;
+import com.ecom.martin.emtemployeemanagement.model.EmployeeEditObject;
 import com.ecom.martin.emtemployeemanagement.service.DepartmentService;
 import com.ecom.martin.emtemployeemanagement.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,8 +37,8 @@ public class EmployeeController {
 
     @GetMapping("/employees")
     public String getEmployeesOfDepartment(Model model,
-                                                   Pageable pageable,
-                                                   Sort sort) {
+                                           Pageable pageable,
+                                           Sort sort) {
         Page<Employee> page = new PageImpl<>(Collections.emptyList());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<SimpleGrantedAuthority> authorities = (List<SimpleGrantedAuthority>) authentication.getAuthorities();
@@ -51,6 +52,7 @@ public class EmployeeController {
                     .orElse(new PageImpl<>(Collections.emptyList()));
         }
 
+        model.addAttribute("email", getActiveUserEmail());
         model.addAttribute("employees", page.getContent());
         model.addAttribute("totalElements", page.getTotalElements());
         model.addAttribute("totalPages", page.getTotalPages());
@@ -68,5 +70,34 @@ public class EmployeeController {
                        Model model) {
         this.employeeService.deleteEmployeeByEmail(email);
         return getEmployeesOfDepartment(model, pageable, sort);
+    }
+
+    @GetMapping("/profile-edit")
+    public String showEditProfilePage(Model model) {
+        String username =
+                ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Employee u = this.employeeService.getEmployee(username).get();
+        EmployeeEditObject employeeEditObject
+                = new EmployeeEditObject(u.getFirstName(), u.getLastName(), u.getBirthDate(), u.getGender());
+        model.addAttribute("email", getActiveUserEmail());
+        model.addAttribute("user", employeeEditObject);
+        return "profile-edit";
+    }
+
+    @PostMapping("/profile-edit")
+    public String editProfile(Model model,
+                              @ModelAttribute("user") @Valid EmployeeEditObject employeeEditObject,
+                              BindingResult bindingResult) {
+        String username =
+                ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        Employee e = this.employeeService.getEmployee(username).get();
+        e = this.employeeService.editEmployee(e, employeeEditObject);
+        model.addAttribute("email", getActiveUserEmail());
+        return "redirect:/me";
+    }
+
+
+    private String getActiveUserEmail() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
     }
 }

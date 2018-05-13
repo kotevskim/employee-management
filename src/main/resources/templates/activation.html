@@ -10,7 +10,7 @@
 </head>
 <body>
 <div class="container">
-    <h2>Enter the code to active your account</h2>
+    <h2>Enter the code from the email to active your account</h2>
     <form th:action="@{/activation}" method="post">
         <div class="form-group">
             <div th:if="${param.error}" class="alert alert-danger">
@@ -18,7 +18,7 @@
             </div>
             <input type="text" name="activationCode" class="form-control" id="input-activation-code" placeholder="Enter activation code">
         </div>
-        <button type="submit" class="btn btn-block btn-success">Send activation code to email</button>
+        <button type="submit" class="btn btn-block btn-success">Activate your account</button>
     </form>
 </div>
 </body>

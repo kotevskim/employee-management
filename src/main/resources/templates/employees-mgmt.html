@@ -11,10 +11,22 @@
 </head>
 <body>
 
+<div class="container-fluid" style="height: 50px; line-height: 50px; background-color: whitesmoke; margin-bottom: 20px">
+    <nav class="container clearfix">
+        <form class="float-right" action="#" th:action="@{/logout}" method="post" style="display: inline-block">
+            <button class="btn btn-sm" type="submit">Logout</button>
+        </form>
+        <div>
+            <span>Logged in: </span>
+            <span style="font-weight: bold;" th:text="${email}"></span>
+        </div>
+    </nav>
+</div>
+
 <div class="container">
     <span class="active-page">Number of employees in your department:</span>
-    <!--<span th:text="${totalElements}"></span>-->
-    <!--<br>-->
+    <span th:text="${totalElements}"></span>
+    <br>
 
     <ul class="list-group">
         <li th:each="e : ${employees}" class="list-group-item">
@@ -23,7 +35,7 @@
             <br>
             <span th:text="${e.email}"></span>
             <br>
-            <span th:text="${e.role}"></span>
+            <small th:text="${e.role}"></small>
             <form class="float-right" th:method="delete" th:action="@{|/employees/${e.email}|}">
                 <button type="submit" name="submit" value="value" class="btn btn-sm">delete</button>
             </form>

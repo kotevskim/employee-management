@@ -9,13 +9,21 @@
     <title>Me</title>
 </head>
 <body>
-<div class="container">
-    <span th:text="${username}"></span>
-    <div>
-        <form action="#" th:action="@{/logout}" method="post">
-            <input type="submit" value="Logout" />
+
+<div class="container-fluid" style="height: 50px; line-height: 50px; background-color: whitesmoke; margin-bottom: 20px">
+    <nav class="container clearfix">
+        <form class="float-right" action="#" th:action="@{/logout}" method="post" style="display: inline-block">
+            <button class="btn btn-sm" type="submit">Logout</button>
         </form>
-    </div>
+        <div>
+            <span>Logged in: </span>
+            <span style="font-weight: bold;" th:text="${email}"></span>
+        </div>
+    </nav>
+</div>
+
+<div class="container">
+ me works
 </div>
 </body>
 </html>
