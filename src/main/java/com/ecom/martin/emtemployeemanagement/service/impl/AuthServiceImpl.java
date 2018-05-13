@@ -42,16 +42,7 @@ public class AuthServiceImpl implements AuthService {
         String to = em.getEmail();
         String subject = "Activate account";
         String text = "Copy the folowing code: " + verificationToken.getCode();
-        // TODO run in a sepparate thread
-        boolean sent = false;
-        while (!sent) {
-            try {
-                this.mailService.sendMail(from, to, subject, text);
-                sent = true;
-            } catch (MailException e) {
-                System.out.println("MAILERROR" + e.getMessage());
-            }
-        }
+        mailService.sendMail(from, to, subject, text); // async method
     }
 
     @Override

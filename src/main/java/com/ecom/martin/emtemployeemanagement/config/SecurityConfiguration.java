@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Collections;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -31,7 +31,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         super.configure(auth);
-        auth.userDetailsService(userDetailsService())
+        auth
+                .userDetailsService(userDetailsService())
                 .passwordEncoder(passwordEncoder());
     }
 
@@ -45,13 +46,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().clearAuthentication(true).invalidateHttpSession(true)
                 .and()
-                .authorizeRequests().antMatchers("/me").hasRole("EMPLOYEE")
+                .authorizeRequests()
+                .antMatchers("/me").authenticated()
+                .antMatchers("/employees").hasAnyRole("MANAGER", "ADMIN")
                 .and()
                 .authorizeRequests().antMatchers(
                 "/login",
                 "/register",
                 "/activation",
                 "reset-password").permitAll();
+        // for a REST API
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Bean
@@ -73,7 +78,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     employee.isAccountNotExpired(),
                     employee.isCredentialsNotExpired(),
                     employee.isAccountNotLocked(),
-                    Collections.singletonList(new SimpleGrantedAuthority(employee.getRole().toString())));
+                    Arrays.asList(new SimpleGrantedAuthority(employee.getRole().toString())));
         };
     }
 

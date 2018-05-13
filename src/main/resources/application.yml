@@ -21,7 +21,7 @@ spring:
   jpa:
     show-sql: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
     properties:
       hibernate:
         format_sql: true
@@ -29,7 +29,7 @@ spring:
   mail:
     host: smtp.gmail.com
     username: deutschmankote@gmail.com
-    password:
+    password: 131_KOte**
     port: 587
     protocol: smtp
     properties:

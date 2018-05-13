@@ -8,10 +8,13 @@ import com.ecom.martin.emtemployeemanagement.persistence.EmployeeDao;
 import com.ecom.martin.emtemployeemanagement.service.EmployeeService;
 import com.ecom.martin.emtemployeemanagement.service.MailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -52,5 +55,20 @@ public class EmployeeServiceImpl implements EmployeeService {
         );
         this.employeeDao.save(em);
         return em;
+    }
+
+    @Override
+    public Page<Employee> getEmployees(Pageable pageable) {
+        return this.employeeDao.findAll(pageable);
+    }
+
+    @Override
+    public Optional<Employee> getEmployee(String email) {
+        return this.employeeDao.findById(email);
+    }
+
+    @Override
+    public void deleteEmployeeByEmail(String email) {
+        this.employeeDao.deleteById(email);
     }
 }

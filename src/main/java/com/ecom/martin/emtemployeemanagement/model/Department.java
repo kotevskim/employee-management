@@ -1,19 +1,24 @@
 package com.ecom.martin.emtemployeemanagement.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "DEPARTMENT")
 public class Department {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    public Department(Long id) {
-        this.id = id;
+    @OneToOne
+    @JoinColumn(name = "manager_id")
+    private Employee manager;
+
+    public Department() {
+
     }
+
+
     public Long getId() {
         return id;
     }

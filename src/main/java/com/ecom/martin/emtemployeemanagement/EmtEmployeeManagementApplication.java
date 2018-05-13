@@ -2,9 +2,10 @@ package com.ecom.martin.emtemployeemanagement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
-//@EnableEmailTools
+@EnableAsync
 public class EmtEmployeeManagementApplication {
 
 	public static void main(String[] args) {
