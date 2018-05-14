@@ -52,7 +52,7 @@ public class EmployeeController {
                     .orElse(new PageImpl<>(Collections.emptyList()));
         }
 
-        model.addAttribute("email", getActiveUserEmail());
+        model.addAttribute("email", getActiveUser().getUsername());
         model.addAttribute("employees", page.getContent());
         model.addAttribute("totalElements", page.getTotalElements());
         model.addAttribute("totalPages", page.getTotalPages());
@@ -79,7 +79,7 @@ public class EmployeeController {
         Employee u = this.employeeService.getEmployee(username).get();
         EmployeeEditObject employeeEditObject
                 = new EmployeeEditObject(u.getFirstName(), u.getLastName(), u.getBirthDate(), u.getGender());
-        model.addAttribute("email", getActiveUserEmail());
+        model.addAttribute("email", getActiveUser().getUsername());
         model.addAttribute("user", employeeEditObject);
         return "profile-edit";
     }
@@ -92,12 +92,12 @@ public class EmployeeController {
                 ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         Employee e = this.employeeService.getEmployee(username).get();
         e = this.employeeService.editEmployee(e, employeeEditObject);
-        model.addAttribute("email", getActiveUserEmail());
+        model.addAttribute("email", getActiveUser().getUsername());
         return "redirect:/me";
     }
 
 
-    private String getActiveUserEmail() {
-        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+    private User getActiveUser() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 }

@@ -65,13 +65,24 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void resetPasswordForEmployee(Employee employee) {
-        String newPassword = UUID.randomUUID().toString().substring(0, 6);
+        String newPassword = UUID.randomUUID().toString().substring(0, 10);
         employee.setPassword(passwordEncoder.encode(newPassword));
         String to = employee.getEmail();
         String subject = MAIL_SUBJECT_PASSWORD_RESET;
         String text = String.format("This is your new generated password: %s", newPassword);
         String successLogMessage =  "Mail with new password sent to " + to;
         this.mailService.sendMail(to, subject, text, successLogMessage);
+    }
+
+    @Override
+    public boolean isValidPassword(Employee e, String password) {
+        return this.passwordEncoder.matches(password, e.getPassword());
+    }
+
+    @Override
+    @Transactional
+    public void updatePassword(Employee e, String newPassword) {
+        e.setPassword(this.passwordEncoder.encode(newPassword));
     }
 
 }

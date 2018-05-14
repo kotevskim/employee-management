@@ -13,4 +13,8 @@ public interface AuthService {
 
     void resetPasswordForEmployee(Employee employee);
 
+    boolean isValidPassword(Employee e, String password);
+
+    void updatePassword(Employee e, String newPassword);
+
 }

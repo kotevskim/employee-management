@@ -4,8 +4,13 @@ import com.ecom.martin.emtemployeemanagement.model.Employee;
 import com.ecom.martin.emtemployeemanagement.model.EmployeeRegisterObject;
 import com.ecom.martin.emtemployeemanagement.service.AuthService;
 import com.ecom.martin.emtemployeemanagement.service.EmployeeService;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,10 +29,14 @@ public class LandingController {
 
     private final EmployeeService employeeService;
     private final AuthService authService;
+    private final PasswordEncoder passwordEncoder;
 
-    public LandingController(EmployeeService employeeService, AuthService authService) {
+    public LandingController(EmployeeService employeeService,
+                             AuthService authService,
+                             PasswordEncoder passwordEncoder) {
         this.employeeService = employeeService;
         this.authService = authService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping(value = "/me")
@@ -85,19 +94,46 @@ public class LandingController {
         }
     }
 
-    @GetMapping("/reset-password")
+    @GetMapping("/password-reset")
     public String showForgotPasswordPage() {
-        return "reset-password";
+        return "password-reset";
     }
 
-    @PostMapping("/reset-password")
+    @PostMapping("/password-reset")
     public String resetPassword(@RequestParam String email) {
         return this.employeeService.getEmployee(email)
                 .map(e -> {
                     this.authService.resetPasswordForEmployee(e);
                     return "redirect:/login";
                 })
-                .orElse("redirect:/reset-password?error");
+                .orElse("redirect:/password-reset?error");
+    }
+
+    @GetMapping("/password-change")
+    public String showChangePasswordPage(Model model) {
+        model.addAttribute("email", getActiveUser().getUsername());
+        return "password-change";
+    }
+
+    @PostMapping("/password-change")
+    public String changePassword(@RequestParam String oldPassword,
+                                 @RequestParam String newPassword,
+                                 @RequestParam String newPasswordRepeat
+    ) {
+        Employee e = employeeService.getEmployee(getActiveUser().getUsername()).get();
+        boolean validPassword = authService.isValidPassword(e, oldPassword);
+        if (!validPassword) {
+            return "redirect:/password-change?invalid";
+        } else if (!newPassword.equals(newPasswordRepeat)) {
+            return "redirect:/password-change?dontMatch";
+        } else {
+            this.authService.updatePassword(e, newPassword);
+            return "redirect:/me"; // TODO should logout after password change
+        }
+    }
+
+    private User getActiveUser() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 
 }

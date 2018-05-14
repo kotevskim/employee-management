@@ -42,7 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin().loginPage("/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/profile-edit", true)
+                .defaultSuccessUrl("/me", true)
 //                .successForwardUrl("/profile-edit")
                 .and()
                 .logout().clearAuthentication(true).invalidateHttpSession(true).deleteCookies("remember-me")
@@ -50,21 +50,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .rememberMe().key("myRememberMeKey").tokenValiditySeconds(2592000)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/me", "/profile-edit").authenticated()
+                .antMatchers("/me", "/profile-edit", "/password-change").authenticated()
                 .antMatchers("/employees").hasAnyRole("MANAGER", "ADMIN")
                 .and()
                 .authorizeRequests().antMatchers(
                 "/login",
                 "/register",
                 "/activation",
-                "reset-password").permitAll();
+                "/password-reset").permitAll();
         // for a REST API
 //        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder;
+//        return new BCryptPasswordEncoder();
     }
 
     @Bean
