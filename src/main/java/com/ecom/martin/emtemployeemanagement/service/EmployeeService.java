@@ -12,6 +12,9 @@ public interface EmployeeService {
 
     Employee createEmployee(EmployeeRegisterObject user);
 
+    @Deprecated
+    Employee createEmployee(Employee e);
+
     Page<Employee> getEmployees(Pageable pageable);
 
     Optional<Employee> getEmployee(String email);

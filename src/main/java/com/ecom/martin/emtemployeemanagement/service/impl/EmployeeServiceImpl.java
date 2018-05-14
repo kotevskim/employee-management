@@ -60,6 +60,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
+    public Employee createEmployee(Employee e) {
+        return this.employeeDao.save(e);
+    }
+
+    @Override
     public Page<Employee> getEmployees(Pageable pageable) {
         return this.employeeDao.findAll(pageable);
     }

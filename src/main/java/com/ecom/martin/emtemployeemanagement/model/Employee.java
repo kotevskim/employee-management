@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "EMPLOYEE") // TODO why doesn't take this into consideration, table names are lowercase?
+@Table(name = "employee") // TODO why doesn't take this into consideration, table names are lowercase?
 public class Employee {
 
     @Id

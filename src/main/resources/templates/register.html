@@ -63,6 +63,10 @@
         <button type="submit" class="btn btn-block btn-success">Sign Up</button>
     </form>
     <br>
+
+    <a href="/login/facebook">Connect with Facebook</a><br>
+    <a href="/login/github">Connect with GitHub</a><br>
+
     <div class="alert alert-danger" th:if="${objectErrors} or ${fieldErrors}">
         <h2>Validation errors</h2>
         <ul class="list-group" th:if="${objectErrors}">
