@@ -2,6 +2,7 @@ package com.ecom.martin.emtemployeemanagement.web.controllers;
 
 import com.ecom.martin.emtemployeemanagement.model.Employee;
 import com.ecom.martin.emtemployeemanagement.model.EmployeeEditObject;
+import com.ecom.martin.emtemployeemanagement.model.exception.EmployeeNotFoundException;
 import com.ecom.martin.emtemployeemanagement.service.DepartmentService;
 import com.ecom.martin.emtemployeemanagement.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +95,32 @@ public class EmployeeController {
         e = this.employeeService.editEmployee(e, employeeEditObject);
         model.addAttribute("email", getActiveUser().getUsername());
         return "redirect:/me";
+    }
+
+    @GetMapping("/employees/{email}/profile-edit")
+    public String showEditProfilePageForEmployee(Model model,
+                                                 @PathVariable String email) {
+        Employee e = this.employeeService.getEmployee(email)
+                .orElseThrow(EmployeeNotFoundException::new);
+        EmployeeEditObject employeeEditObject
+                = new EmployeeEditObject(e.getFirstName(), e.getLastName(), e.getBirthDate(), e.getGender());
+        model.addAttribute("email", getActiveUser().getUsername());
+        model.addAttribute("empEmail", e.getEmail());
+        model.addAttribute("user", employeeEditObject);
+        return "employee-profile-edit";
+    }
+
+    @PostMapping("/employees/{email}/profile-edit")
+    public String editProfileForEmployee(Model model,
+                                         Pageable pageable,
+                                         Sort sort,
+                                         @PathVariable String email,
+                                         @ModelAttribute("user") @Valid EmployeeEditObject employeeEditObject,
+                                         BindingResult bindingResult) {
+        Employee e = this.employeeService.getEmployee(email)
+                .orElseThrow(() -> new EmployeeNotFoundException());
+        this.employeeService.editEmployee(e, employeeEditObject);
+        return getEmployeesOfDepartment(model, pageable, sort);
     }
 
 

@@ -36,20 +36,23 @@
             <span th:text="${e.email}"></span>
             <br>
             <small th:text="${e.role}"></small>
+            <form class="float-right" th:method="GET" th:action="@{|/employees/${e.email}/profile-edit|}">
+                <button type="submit" name="submit" value="value" class="btn btn-sm">Edit</button>
+            </form>
             <form class="float-right" th:method="delete" th:action="@{|/employees/${e.email}|}">
-                <button type="submit" name="submit" value="value" class="btn btn-sm">delete</button>
+                <button type="submit" name="submit" value="value" class="btn btn-sm">Delete</button>
             </form>
         </li>
     </ul>
 
     <div class="pager">
 
-        <a th:if="${hasPrevPage}" th:href="@{/employees(page=${pageNumber-1},size=1)}">prev</a>
+        <a th:if="${hasPrevPage}" th:href="@{/employees(page=${pageNumber-1},size=3)}">prev</a>
 
         <a th:each="page:${#numbers.sequence(0,totalPages - 1)}"
            th:text="${page}"
            th:classappend="${page == pageNumber} ? active-page"
-           th:href="@{/employees(page=${page},size=1)}"
+           th:href="@{/employees(page=${page},size=3)}"
            style="margin-right: 7px">
         </a>
 

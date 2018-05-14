@@ -96,15 +96,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(endpointsPublic).permitAll()
                 .antMatchers(endpointsAuthenticated).authenticated()
-                .antMatchers("/employees").hasAnyRole("MANAGER", "ADMIN")
+                .antMatchers("/employees/**").hasAnyRole("MANAGER", "ADMIN")
                 .and()
                 .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
     }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder();
-//    }
 
     @Bean
     public UserDetailsService userDetailsService() {

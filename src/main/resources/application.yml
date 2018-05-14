@@ -62,3 +62,10 @@ github:
     clientAuthenticationScheme: form
   resource:
     userInfoUri: https://api.github.com/user
+
+# admin user configuration
+app:
+  user:
+    admin:
+      email: admin@admin123
+      password: admin123
